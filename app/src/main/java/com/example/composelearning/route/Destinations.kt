@@ -1,6 +1,5 @@
 package com.example.composelearning.route
 
-import androidx.navigation.NavArgs
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
@@ -24,14 +23,31 @@ object DashBoard : Destinations {
     override val title: String
         get() = "Dashboard"
     override val route: String
-        get() = "dashboard"
+        get() = "Dashboard"
     override val routeWithArgs: String
-        get() = "$route/{name}"
+        get() = "$route/{name}/{pass}"
 
     val argument = listOf(
-        navArgument(name = "name") { type = NavType.IntType }
+        navArgument(name = "name") { type = NavType.IntType },
+        navArgument(name = "pass") { type = NavType.StringType }
     )
 
 }
 
-val movieDestination = listOf(Login, DashBoard)
+
+object DetailView : Destinations {
+    override val title: String
+        get() = "Detail"
+    override val route: String
+        get() = "detail"
+    override val routeWithArgs: String
+        get() = "$route/{movieId}"
+
+    val argument = listOf(
+        navArgument(name = "movieId") { type = NavType.IntType },
+    )
+
+}
+
+
+val movieDestination = listOf(Login, DashBoard,DetailView)

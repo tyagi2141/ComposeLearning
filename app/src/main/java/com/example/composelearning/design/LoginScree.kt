@@ -1,8 +1,6 @@
 package com.example.composelearning.design
 
 import android.content.Context
-import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,19 +23,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.route.DashBoard
-import com.example.composelearning.route.Destinations
+import com.example.composelearning.viewModel.LoginPojo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScree(modifier: Modifier = Modifier, context: Context, onClick : () -> Unit = {}) {
+fun LoginScree(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    uiState: LoginPojo
+) {
     var name by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    val navController = rememberNavController()
+    var funcMultiply: (String, String) -> LoginPojo = { a: String, b: String ->
+        LoginPojo(name = a, password = b)
+
+    }
 
     Column(
         modifier = modifier
@@ -46,7 +48,12 @@ fun LoginScree(modifier: Modifier = Modifier, context: Context, onClick : () -> 
     ) {
         TextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = {
+
+                name = it
+                uiState.name = it
+
+            },
             label = { Text(text = "Name") },
             modifier = modifier
                 .align(Alignment.CenterHorizontally)
@@ -56,15 +63,21 @@ fun LoginScree(modifier: Modifier = Modifier, context: Context, onClick : () -> 
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                uiState.password = it
+
+            },
             label = { Text(text = "Password") },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .border(width = 1.dp, color = Color.Gray, shape = RectangleShape), singleLine = true
         )
-
-
-        CreateButton(text = "Login", modifier.align(Alignment.CenterHorizontally),onClick)
+        CreateButton(
+            text = "Login",
+            modifier.align(Alignment.CenterHorizontally),
+            onClick
+        )
     }
 
 

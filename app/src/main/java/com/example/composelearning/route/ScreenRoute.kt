@@ -1,7 +1,6 @@
 package com.example.composelearning.route
 
 import android.util.Log
-import android.widget.Button
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -12,14 +11,21 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.design.DashBoard
+import com.example.composelearning.design.DetailViewScreen
 import com.example.composelearning.design.LoginScree
+import com.example.composelearning.viewModel.DashBoardViewModel
+import com.example.composelearning.viewModel.DetailViewModel
+import com.example.composelearning.viewModel.LoginViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import io.ktor.http.parametersOf
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 
 @Composable
@@ -59,23 +65,46 @@ fun ScreenRoute() {
             startDestination = Login.routeWithArgs
         ) {
             composable(Login.routeWithArgs) {
-                // val homeViewModel: HomeViewModel = koinViewModel()
-                val context = LocalContext.current
-
-                LoginScree(modifier = Modifier, context, onClick = {
-                    navController.navigate( "${DashBoard.route}/${"rahul"}}")
-                })
+                val loginViewModel: LoginViewModel = viewModel()
 
 
+                LoginScree(
+                    modifier = Modifier,
+                    uiState = loginViewModel.uiStateLogin,
+                    onClick = {
+                        navController.popBackStack(DashBoard.route, true)
+                        navController.navigate("${DashBoard.route}/${loginViewModel.uiStateLogin.name}/${loginViewModel.uiStateLogin.password}")
+
+                    },
+                )
             }
 
 
             composable(DashBoard.routeWithArgs) {
+                val dashboardViewModel: DashBoardViewModel = koinViewModel()
+
+                Log.e("vjhvhjvhjv", "${dashboardViewModel.uiState.movieList}")
+                Log.e("vjhvhjvhjv errror", "${dashboardViewModel.uiState.errorMessage}")
                 val name = it.arguments?.getString("name") ?: "0"
-               DashBoard(name = name, password ="tyagi" )
-                Log.e("dataaaaa....", "$name")
+                val pass = it.arguments?.getString("pass") ?: "0"
+                DashBoard(
+                    name = name,
+                    password = pass,
+                    uiState = dashboardViewModel.uiState,
+                    loadNextMovie = { dashboardViewModel.loadMovies(forceReload = it) },
+                    navigateToDetail = {
+                        navController.navigate("${DetailView.route}/${it.id}")
+                    }
+                )
+            }
+
+            composable(DetailView.routeWithArgs,arguments = DetailView.argument) {
+                val movieId = it.arguments?.getInt("movieId") ?: 0
+                val detailVM: DetailViewModel = koinViewModel(parameters = { parametersOf(movieId) })
+                DetailViewScreen(detailVM.uiState)
             }
         }
 
     }
 }
+
