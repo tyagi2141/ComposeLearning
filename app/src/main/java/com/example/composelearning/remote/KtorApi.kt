@@ -18,6 +18,7 @@ private const val BASE_URL = "https://api.themoviedb.org"
 //private const val API_KEY = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNGQ5OTliMzhhODM5NjE5ZjFjM2VjYTk5ZTI4ZTZmMiIsInN1YiI6IjU4ZWQwNzMwOTI1MTQxNGIyODA1OGU4MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-_k0B_CrhF4yClJoMobuDkt8om2wbH6ZpZc3flM4TeY"
 private const val API_KEY = "8c1a99064f1795f3ba344497293aa2c4"
 
+
 internal abstract class KtorApi {
     val client = HttpClient {
         install(ContentNegotiation){

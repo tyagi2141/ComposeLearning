@@ -113,5 +113,5 @@ fun validation(name: String, password: String, context: Context): Boolean {
 @Preview(showSystemUi = true)
 @Composable
 fun showLogin() {
-    // LoginScree()
+    LoginScree(Modifier,{},LoginPojo("rahul","tyagi"))
 }
